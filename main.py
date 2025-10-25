@@ -150,9 +150,9 @@ async def main():
     perception_output = await perception.get_query_perception(client, model, tools_description)
     percepted_prompt = f"{system_prompt}\n\n Reasoning to solve equation:\n {perception_output} \n\n"
 
-    percepted_prompt = f"""{percepted_prompt} Before returning the FINAL_ANSWER, append the values with $ sign. \n\n"""
+    percepted_prompt = f"""{percepted_prompt} Before returning the FINAL_ANSWER, {memory.get('Output Format')}. \n\n"""
     print(percepted_prompt)
-    query = f"Solve the equation: 5+((2+3)*(4+6))/2." 
+    query = f"Solve the equation: {memory.get('Input Equation')}" 
     iteration_response = None
     iteration = 0
     max_iterations = 10
@@ -182,5 +182,11 @@ async def main():
                 break
 
 if __name__ == "__main__":
-    memory.store("Final Answer Offset", "5")
+
+    input_equation = input("Enter a math equation: ")
+    memory.store("Input Equation", input_equation)
+
+    output_format = input("Enter the output format: ")
+    memory.store("Output Format", output_format)
+    
     asyncio.run(main())
